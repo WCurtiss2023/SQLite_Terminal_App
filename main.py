@@ -13,10 +13,13 @@ states = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", 
     "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
     "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]
 
+#generates random advisors
 def generateAdvisor():
     facultyAdvisors = ["Maverick Deez", "Deez Nuts", "Nuts Deez", "Garlic Nubby", "Rex Plode"]
     advisorIndex = random.randint(0, 4)
     return facultyAdvisors[advisorIndex]
+
+#this makes the strings the correct format for the DB
 def makeWordsCorrectFormat(string):
     string_split = string.split(' ')
     result = []
@@ -24,6 +27,7 @@ def makeWordsCorrectFormat(string):
         result.append(word.capitalize())
     return ' '.join(result)
 
+#used for parsing
 def splitZipCode(thing):
     splitUp = []
     for letter in thing:
@@ -31,7 +35,7 @@ def splitZipCode(thing):
     return splitUp
 
 
-
+#this method makes every record non deleted
 def isDeletedToZero():
     conn = sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite')
     with sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite') as conn:
@@ -40,6 +44,7 @@ def isDeletedToZero():
         conn.commit()
         my_cursor.close()
 
+#this method gives every student an advisor
 def generateAdvisorsForWholeDB():
     conn = sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite')
     with sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite') as conn:
@@ -52,7 +57,7 @@ def generateAdvisorsForWholeDB():
         conn.commit()
         my_cursor.close()
 
-#my_cursor.execute("SELECT TrackId, Name FROM Track LIMIT 10;")
+
 
 def readCSV_toDB(): #here is the function to read the csv file and insert the rows into the students file
     conn = sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite')
@@ -75,11 +80,12 @@ def readCSV_toDB(): #here is the function to read the csv file and insert the ro
 
                 my_cursor.execute("INSERT INTO Student (FirstName,LastName,Address,City,State,ZipCode,MobilePhoneNumber,Major,GPA) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                          (FirstName,LastName,Address,City,State,ZipCode,MobilePhoneNumber,Major,GPA))
-   # Commit the changes and close the connection
+   # Commit the changes
             conn.commit()
+            my_cursor.close()
 
 
-#readCSV_toDB()
+#this method just displays the first five names for my testing
 def displayFirstName():
     conn = sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite')
     with sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite') as conn:
@@ -91,13 +97,12 @@ def displayFirstName():
     # Fetching all records from the query result
         records = my_cursor.fetchall()
 
-    # Displaying the records
         for record in records:
             print(record)
 
-    # Closing the cursor
         my_cursor.close()
 
+#this method displays all the student records
 def displayAllStudents():
     conn = sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite')
     with sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite') as conn:
@@ -114,9 +119,10 @@ def displayAllStudents():
             if record[11] == 0:
                 print(record)
 
-    # Closing the cursor
+
         my_cursor.close()
 
+#this method allows you to add a student record
 def addNewStudentRecord():
     conn = sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite')
     with sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite') as conn:
@@ -176,6 +182,7 @@ def addNewStudentRecord():
             (FirstName, LastName, Address, City, State, ZipCode, MobilePhoneNumber, FacultyAdvisor, Major, GPA, isDeleted))
         my_cursor.close()
 
+#this method allows you to update a record
 def updateRecord():
     conn = sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite')
     with sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite') as conn:
@@ -196,6 +203,8 @@ def updateRecord():
             print("You didn't listen to my directions.")
             updateRecord()
         my_cursor.close()
+
+#this method allows you to delete a student record
 def deleteStudent():
     conn = sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite')
     with sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite') as conn:
@@ -206,7 +215,7 @@ def deleteStudent():
         my_cursor.close()
 
 
-
+#this method lets you display students by a given field
 def queryByFiveAfformentioned():
     conn = sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite')
     with sqlite3.connect('/Users/brainlesscrane/Documents/CPSC_408/StudentDB.sqlite') as conn:
@@ -257,6 +266,7 @@ def queryByFiveAfformentioned():
             queryByFiveAfformentioned()
         my_cursor.close()
 
+#this method is the menu interface for the app
 def menu():
     we_are_mobbing = True
     while we_are_mobbing:
@@ -276,17 +286,17 @@ def menu():
         else:
             print('Please enter the corresponding number for the action')
 
-
-
-#generateAdvisorsForWholeDB()
-
-#isDeletedToZero()
-
 """
 change your path to StudentDB and student.csv in my function readCSV_toDB
 before uncommenting the method by the same name below
 """
 
 #readCSV_toDB()
+
+#generateAdvisorsForWholeDB()
+
+#isDeletedToZero()
+
+
 
 menu()
